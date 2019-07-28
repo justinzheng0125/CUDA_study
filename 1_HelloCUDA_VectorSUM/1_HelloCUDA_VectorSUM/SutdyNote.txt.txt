@@ -1,0 +1,44 @@
+Parallel Computing:
+-> A form of computation in which many calculations are carried out simultaneously
+-> Solve sub-problems of a problem concurrently
+
+__host__
+-> Host is default value
+-> it means CPU
+-> the codes are callable by CPU
+
+__device__
+-> it means GPU
+-> the codes are callable by device (GPU)
+
+__global__
+-> it means kernel
+-> the codes are called by CPU to utilize GPU
+
+Kernel
+-> Device Thread is defined by C function
+-> called by Host (CPU)
+
+<<<>>>
+-> Execution configuration syntax
+-> CUDA gramma
+-> Host calls device code 
+
+A CUDA Program = Host code = Device code
+
+Host(CPU) : calling Device Code, eg: host memory -> system main memory
+
+Device(GPU) : eg: device memory -> GPU global memory
+
+CUDA Programming Structure
+-> Host and Device have distinct memories
+-> Execute asynchronously 
+
+General workflow of a CUDA program
+1. Copy input data from CPU memory to GPU memory
+2. Load GPU cod and execute it, caching data on chip for performance
+3. Copy result from GPU memory to CPU memory
+
+CUDA speed = Computation + Data Transfer Overhead
+
+
