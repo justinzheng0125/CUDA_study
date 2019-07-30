@@ -1,0 +1,43 @@
+
+CUDA Programming Model
+-> SIMT Architecture
+	Single Instruction, Multiple Threads
+	All threads shares same program code (instruction)  -> Kernel
+	Each thread has its own register rate
+	
+How many threads / warps / blocks ?
+
+CUDA Thread Hierarchy
+-> Thread 
+	basic processing unit
+-> Warp
+	32 Threads (32 threads are followed by 1 instruction)
+	basic execution unit
+	Controlled by the same instructions
+-> Block
+	Group of threads
+	Threads in a block have different
+	- thread IDs
+	- - threadIdx (buildt-in variable)
+	Can be 1D, 2D or 3D
+-> Grid
+	Group of blocks
+	Blocks in a block have different
+	- block IDs
+	- - blockIdx (buildt-in variable)
+	Can be 1D, 2D or 3D
+
+Built-in Variables for CUDA Thread Hierarchy
+-> GridDim
+	Dimension of the current grid
+	number of blocks in a Grid
+-> blockIdx
+	Block ID of the current thread
+	block ID in its Grid
+-> blockDim
+	Dimension of the current block
+	number of threads in a Block
+-> threadIdx
+	Thread ID of the current thread
+	block ID in its Thread ID
+	
