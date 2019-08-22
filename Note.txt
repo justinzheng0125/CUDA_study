@@ -1,0 +1,222 @@
+Parallel Computing:
+-> A form of computation in which many calculations are carried out simultaneously
+-> Solve sub-problems of a problem concurrently
+
+__host__
+-> Host is default value
+-> it means CPU
+-> the codes are callable by CPU
+
+__device__
+-> it means GPU
+-> the codes are callable by device (GPU)
+
+__global__
+-> it means kernel
+-> the codes are called by CPU to utilize GPU
+
+Kernel
+-> Device Thread is defined by C function
+-> called by Host (CPU)
+
+<<<>>>
+-> Execution configuration syntax
+-> CUDA gramma
+-> Host calls device code 
+
+A CUDA Program = Host code = Device code
+
+Host(CPU) : calling Device Code, eg: host memory -> system main memory
+
+Device(GPU) : eg: device memory -> GPU global memory
+
+CUDA Programming Structure
+-> Host and Device have distinct memories
+-> Execute asynchronously 
+
+General workflow of a CUDA program
+1. Copy input data from CPU memory to GPU memory
+2. Load GPU cod and execute it, caching data on chip for performance
+3. Copy result from GPU memory to CPU memory
+
+CUDA speed = Computation + Data Transfer Overhead
+
+
+
+CUDA Programming Model
+-> SIMT Architecture
+	Single Instruction, Multiple Threads
+	All threads shares same program code (instruction)  -> Kernel
+	Each thread has its own register rate
+	
+How many threads / warps / blocks ?
+
+CUDA Thread Hierarchy
+-> Thread 
+	basic processing unit
+-> Warp
+	32 Threads (32 threads are followed by 1 instruction)
+	basic execution unit
+	Controlled by the same instructions
+-> Block
+	Group of threads
+	Threads in a block have different
+	- thread IDs
+	- - threadIdx (buildt-in variable)
+	Can be 1D, 2D or 3D
+-> Grid
+	Group of blocks
+	Blocks in a block have different
+	- block IDs
+	- - blockIdx (buildt-in variable)
+	Can be 1D, 2D or 3D
+
+Built-in Variables for CUDA Thread Hierarchy
+-> GridDim
+	Dimension of the current grid
+	number of blocks in a Grid
+-> blockIdx
+	Block ID of the current thread
+	block ID in its Grid
+-> blockDim
+	Dimension of the current block
+	number of threads in a Block
+-> threadIdx
+	Thread ID of the current thread
+	block ID in its Thread ID
+	
+
+
+
+
+Determining Grid and Block Size
+-> Gerneral Steps
+	decide the block size
+	calculate the grid dimension based on the application data size and the block size
+-> To determine size of a block, consider
+	performance characteristics of the kernel
+	Limitations on GPU resources
+	
+eg.
+Thread Layout
+	dim3 dimGrid(NUM_DATA/256, 1, 1);
+	dim3 dimBlock(256, 1, 1);
+	
+Kernel
+	__global__ void vecAdd(int *_a, int *_b, int *_c)
+	{
+		int tID = blockIdx.x * blockDim.x + threadIdx.x;
+		_c[tID] = _a[tID] + _b[tID];
+	}
+	
+Global Thread ID in 1D Grid
+-> what global thread ID (TID_IN_BLOCK) Block?
+1D block
+	threadIdx.x
+2D block (2D_block_TID)
+	blockDim.x * threadIdx.y + threadIdx.x
+3D block (3D_block_TID)
+	blockDim.x * blockDim.y * threadIdx.z + 2D_block_TID
+	
+-> what global thread ID in Grid (1D_grid_TID)
+	blockDim.x * blockDim.y * blockDim.z * blockIdx.x + TID_IN_BLOCK
+
+NUM_THREAD_IN_BLOCK = blockDim.x * blockDim.y * blockDim.z
+
+-> global thread ID in Grid?
+2D grid (2D_grid_TID)
+	NUM_THREAD_IN_BLOCK * gridDim.x * blockDim.y + 1D_grid_TID
+3D grid
+	NUM_THREAD_IN_BLOCK * gridDim.x * gridDim.y * blockIdx.z + 2D_grid_TID
+	
+Parallel Computing:
+-> A form of computation in which many calculations are carried out simultaneously
+-> Solve sub-problems of a problem concurrently
+
+__host__
+-> Host is default value
+-> it means CPU
+-> the codes are callable by CPU
+
+__device__
+-> it means GPU
+-> the codes are callable by device (GPU)
+
+__global__
+-> it means kernel
+-> the codes are called by CPU to utilize GPU
+
+Kernel
+-> Device Thread is defined by C function
+-> called by Host (CPU)
+
+<<<>>>
+-> Execution configuration syntax
+-> CUDA gramma
+-> Host calls device code 
+
+A CUDA Program = Host code = Device code
+
+Host(CPU) : calling Device Code, eg: host memory -> system main memory
+
+Device(GPU) : eg: device memory -> GPU global memory
+
+CUDA Programming Structure
+-> Host and Device have distinct memories
+-> Execute asynchronously 
+
+General workflow of a CUDA program
+1. Copy input data from CPU memory to GPU memory
+2. Load GPU cod and execute it, caching data on chip for performance
+3. Copy result from GPU memory to CPU memory
+
+CUDA speed = Computation + Data Transfer Overhead
+
+
+CUDA Programming Model
+-> SIMT Architecture
+	Single Instruction, Multiple Threads
+	All threads shares same program code (instruction)  -> Kernel
+	Each thread has its own register rate
+	
+How many threads / warps / blocks ?
+
+CUDA Thread Hierarchy
+-> Thread 
+	basic processing unit
+-> Warp
+	32 Threads (32 threads are followed by 1 instruction)
+	basic execution unit
+	Controlled by the same instructions
+-> Block
+	Group of threads
+	Threads in a block have different
+	- thread IDs
+	- - threadIdx (buildt-in variable)
+	Can be 1D, 2D or 3D
+-> Grid
+	Group of blocks
+	Blocks in a block have different
+	- block IDs
+	- - blockIdx (buildt-in variable)
+	Can be 1D, 2D or 3D
+
+Built-in Variables for CUDA Thread Hierarchy
+-> GridDim
+	Dimension of the current grid
+	number of blocks in a Grid
+-> blockIdx
+	Block ID of the current thread
+	block ID in its Grid
+-> blockDim
+	Dimension of the current block
+	number of threads in a Block
+-> threadIdx
+	Thread ID of the current thread
+	block ID in its Thread ID
+	
+	
+	
+
+
+	
