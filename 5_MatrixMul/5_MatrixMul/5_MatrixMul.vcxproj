@@ -78,6 +78,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <CudaCompile Include="MatMul.cu" />
+    <CudaCompile Include="MatMul_singleBlock.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
