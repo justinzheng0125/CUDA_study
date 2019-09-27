@@ -1,2 +1,2 @@
 # CUDA_study
-# Reference: CUDA tutorials from HPC Lab. KOREATECH (youtube account)
+# Reference: CUDA tutorials course: Multi-core Programming, 2019 from HPC Lab. KOREATECH (youtube)
