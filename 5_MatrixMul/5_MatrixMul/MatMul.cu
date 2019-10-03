@@ -1,3 +1,5 @@
+
+/*
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 //#include "helper_cuda.h"
@@ -115,3 +117,5 @@ int main(int argc, char* argv[]) {
 
 	return 0;
 }
+
+*/

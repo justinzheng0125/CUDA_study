@@ -1,5 +1,8 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
+#include <device_functions.h>
+#include <cuda.h>
+#include <cuda_runtime_api.h>
 
 #include <omp.h>
 #include <stdio.h>
@@ -35,7 +38,29 @@ __global__ void mult_kernel(float* _A, float* _B, float* _C) {
 			_C[index] += _A[row * K_SIZE + k] * _B[k * COL_SIZE + col];
 		}
 	}
-	
+}
+
+__global__ void mult_kernel_shared(float* _A, float* _B, float* _C) {
+	int row = threadIdx.y;
+	int col = threadIdx.x;
+	int index = row * blockDim.x + col;
+
+	__shared__ float sA[ROW_SIZE][K_SIZE];
+	__shared__ float sB[K_SIZE][COL_SIZE];
+
+	for (int k = 0; k < K_SIZE; k++) {
+		sA[row][k] = _A[row * K_SIZE + k];
+		sB[k][col] = _B[k * COL_SIZE + col];
+	}
+
+	//__syncthreads();
+
+	_C[index] = 0;
+	for (int i = 0; i < K_SIZE; i++) {
+		for (int j = 0; j < WORK_LOAD; j++) {
+		}
+	}
+
 }
 
 void main(void) {
@@ -73,23 +98,36 @@ void main(void) {
 			}
 		}
 	}
-
+	/*
+	for (int i = 0; i < ROW_SIZE; i++) {
+		for (int j = 0; j < COL_SIZE; j++) {
+			printf("hostc[%d][%d] = %f\n",i,j, hostC[i][j]);
+			
+			//printf("hostc[%d] == devicec[%d]\n", hostC[i][j], deviceC[i][j]);
+		}
+	}
+	*/
 	// copy Data to GPU
 	cudaMemcpy(dA, A, sizeof(float) * MAT_SIZE_A, cudaMemcpyHostToDevice);
 	cudaMemcpy(dB, B, sizeof(float) * MAT_SIZE_B, cudaMemcpyHostToDevice);
 
 	dim3 blockDim(COL_SIZE, ROW_SIZE);
-	mult_kernel << <1, blockDim >> > (dA, dB, dC);
+
+	//mult_kernel << <1, blockDim >> > (dA, dB, dC);
+	mult_kernel_shared << <1, blockDim >> > (dA, dB, dC);
+
 	cudaDeviceSynchronize();
 	cudaMemcpy(deviceC, dC, sizeof(float) * MAT_SIZE_C, cudaMemcpyDeviceToHost);
 
 	bool isCorrect = true;
 	for (int i = 0; i < ROW_SIZE; i++) {
 		for (int j = 0; j < COL_SIZE; j++) {
+			printf("hostc[%d][%d]: %f == %f\n", i, j, hostC[i][j], deviceC[i][j]);
 			if (hostC[i][j] != deviceC[i][j]) {
 				isCorrect = false;
 				break;
 			}
+			printf("hostc[%d] == devicec[%d]\n", hostC[i][j], deviceC[i][j]);
 		}
 	}
 	if (isCorrect) printf("working Correct!!\n");
